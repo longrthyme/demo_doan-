@@ -17,7 +17,7 @@ class EmailController {
         let db;
         try {
             db = await connectDb();
-            const sql = `SELECT ID, SUBJECT, MESSAGE, FILE FROM EMAILS WHERE ID = ?`;
+            const sql = `SELECT ID, SUBJECT, MESSAGE, FILE FROM emails WHERE ID = ?`;
             const [rows] = await db.query(sql, pageNumber);
             if (rows.length > 0) {
                 return res.status(200).render('EmailDetailPage', { data: rows[0], EMAIL, totalReceivedEmail, totalSendedEmail, USERNAME });
@@ -36,7 +36,7 @@ class EmailController {
             const userId = req.params.id;
             console.log(userId);
             db = await connectDb();
-            const sql = `SELECT FILE, MIME_TYPE, ORIGINAL_FILENAME FROM EMAILS WHERE IS_DELETED_BY_RECIPIENT=FALSE AND ID=? `;
+            const sql = `SELECT FILE, MIME_TYPE, ORIGINAL_FILENAME FROM emails WHERE IS_DELETED_BY_RECIPIENT=FALSE AND ID=? `;
             const [rows] = await db.query(sql, userId)
 
 

@@ -12,18 +12,27 @@
         type: typeof type !=='undefined' ? type : '' , message: typeof message !=='undefined' ? message : '' }); %>
         <div class="container">
             <%- include('../partials/Sidebar') %>
+            
                 <div class="content">
+                    
+                    
                     <form class="container-form" method="post" enctype="multipart/form-data">
                         <div class="recipient-group">
                             <label for="recipient">Chọn người nhận:</label>
                             <select name="recipient" id="recipient">
 
                             </select>
+                            <% if (errors && errors.recipient) { %>
+                                <p style="color: red;"><%= errors.recipient %></p>
+                            <% } %>
 
                             <div class="subject">
                                 <label for="subject">Tiêu đề: </label>
                                 <input type="text" name="subject" id="subjectInput">
                             </div>
+                            <% if (errors && errors.subject) { %>
+                                <p style="color: red;"><%= errors.subject %></p>
+                            <% } %>
 
                             <div class="message">
                                 <label for="message">Nhập nội dung: </label>
@@ -48,7 +57,11 @@
                 fetch(API)
                     .then(res => statusCheck(res))
                     .then(data => data.json())
-                    .then(res => displayRecipients(res))
+                    .then(res => {
+                        console.log("receipt " + res);
+                        
+                        displayRecipients(res)
+                    })
                     .catch(err => handleError(err));
             }
 

@@ -4,7 +4,7 @@ const keyCrypto = "myPassword123456";
 
 
 async function connectDb() {
-    const studentId = "2201040080";
+    const studentId = "2201140017";
     const dbName = `wpr${studentId}`;
     try {
         const dbConfig = {
@@ -61,19 +61,19 @@ async function setupDatabase() {
 
         const users = [
             {
-                username: "Alice Anderson",
-                email: "a@a.com",
-                password: "123",
-            },
-            {
-                username: "Tony Stark",
-                email: "tony@example.com",
+                username: "Tony Kroos",
+                email: "kross@a.com",
                 password: "123456",
             },
             {
-                username: "Hùng",
-                email: "hung@gmail.com",
-                password: "22112004",
+                username: "Shark Hung",
+                email: "shark@gmail.com",
+                password: "123456",
+            },
+            {
+                username: "Duong Domik",
+                email: "duongdomic@gmail.com",
+                password: "123456789",
             },
         ];
 

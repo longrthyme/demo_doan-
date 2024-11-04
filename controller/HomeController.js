@@ -39,6 +39,8 @@ class HomeController {
             db = await connectDb();
             const sql = 'SELECT ID, USERNAME, PASSWORD, EMAIL FROM user WHERE USERNAME=?';
             const [rows] = await db.query(sql, [username]);
+            console.log("username " + rows[0].USERNAME + " pass " + decryptText(rows[0].PASSWORD, keyCrypto));
+            
 
             if (rows[0].USERNAME === username && decryptText(rows[0].PASSWORD, keyCrypto) === password) {
                 res.cookie('userId', rows[0].ID);

@@ -10,7 +10,8 @@ class ComposeController {
         const EMAIL = req.cookies.email;
         const totalReceivedEmail = req.cookies.totalReceivedEmail;
         const totalSendedEmail = req.cookies.totalSendedEmail;
-        res.render('ComposePage', { data: userId, USERNAME, EMAIL, totalReceivedEmail, totalSendedEmail });
+        console.log("email" + USERNAME + " totalReceive " + totalReceivedEmail  + " totalSent " + totalSendedEmail)
+        res.render('ComposePage', { data: userId, USERNAME, EMAIL, totalReceivedEmail, totalSendedEmail, errors: {} });
     }
 
     async create(req, res) {
@@ -44,12 +45,15 @@ class ComposeController {
             errors.subject = `Please enter a subject`;
         }
         if (Object.keys(errors).length > 0) {
-            return res.status(400).json({ errors });
+            // return res.status(400).json({ errors });
+            res.status(400).render('ComposePage', { 
+                errors: errors
+            });
         }
 
         try {
             db = await connectDb();
-            const sql1 = `SELECT ID FROM USER WHERE USERNAME= ?`;
+            const sql1 = `SELECT ID FROM user WHERE USERNAME= ?`;
             const [rows] = await db.query(sql1, recipient);
             if (!rows.length) {
                 return res.status(400).json({ message: `Cannot find username ${recipient}` });
@@ -65,14 +69,17 @@ class ComposeController {
                 fileData.originalname // Tên file gốc
             ];
 
-            const sql2 = `INSERT INTO EMAILS (SENDER_ID, RECIPIENT_ID, SUBJECT, MESSAGE, FILE, MIME_TYPE, ORIGINAL_FILENAME) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+            const sql2 = `INSERT INTO emails (SENDER_ID, RECIPIENT_ID, SUBJECT, MESSAGE, FILE, MIME_TYPE, ORIGINAL_FILENAME) VALUES (?, ?, ?, ?, ?, ?, ?)`;
             const [data] = await db.query(sql2, values);
             if (data.affectedRows > 0) {
-                return res.status(200).render('ComposePage', { notification: true, type: notification[0].type, message: notification[0].message, data: userId, USERNAME, EMAIL, totalReceivedEmail, totalSendedEmail });
+                return res.status(200).render('ComposePage', { notification: true, type: notification[0].type, message: notification[0].message, data: userId, USERNAME, EMAIL, totalReceivedEmail, totalSendedEmail, errors: {} });
             }
-            return res.status(400).render('ComposePage', { notification: true, type: notification[1].type, message: notification[1].message, data: userId, USERNAME, EMAIL, totalReceivedEmail, totalSendedEmail });
+            return res.status(400).render('ComposePage', { notification: true, type: notification[1].type, message: notification[1].message, data: userId, USERNAME, EMAIL, totalReceivedEmail, totalSendedEmail, errors: {} });
         } catch (error) {
-            return res.status(500).json({ message: `${error}` });
+            // return res.status(500).json({ message: `${error}` });
+            res.status(500).render('ComposePage', { 
+                errors: error
+            });
         } finally {
             if (db) await db.end();
         }
@@ -83,7 +90,7 @@ class ComposeController {
         let db;
         try {
             db = await connectDb();
-            const sql = `SELECT USERNAME FROM USER WHERE USERNAME != ?`;
+            const sql = `SELECT USERNAME FROM user WHERE USERNAME != ?`;
             const [rows] = await db.query(sql, [current_username]);
             if (rows) {
                 return res.status(200).json([rows]);

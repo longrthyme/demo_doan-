@@ -18,7 +18,7 @@ class InboxController {
       db = await connectDb();
 
       // Get total number of emails for this user
-      let sql = `SELECT COUNT(*) AS total FROM EMAILS WHERE RECIPIENT_ID = ? AND IS_DELETED_BY_RECIPIENT = FALSE`;
+      let sql = `SELECT COUNT(*) AS total FROM emails WHERE RECIPIENT_ID = ? AND IS_DELETED_BY_RECIPIENT = FALSE`;
       let [countResult] = await db.query(sql, userId);
       const numOfResult = countResult[0].total; // Total count for the current user
       const numberOfPages = Math.ceil(numOfResult / resultPerPage);
@@ -47,7 +47,7 @@ class InboxController {
       const startingLimit = (page - 1) * resultPerPage;
 
       // Get the relevant number of emails for this starting page
-      sql = `SELECT ID, SUBJECT, MESSAGE, RECEIVED_AT FROM EMAILS WHERE RECIPIENT_ID = ? AND IS_DELETED_BY_RECIPIENT = FALSE LIMIT ?, ?`;
+      sql = `SELECT ID, SUBJECT, MESSAGE, RECEIVED_AT FROM emails WHERE RECIPIENT_ID = ? AND IS_DELETED_BY_RECIPIENT = FALSE LIMIT ?, ?`;
       let [rows] = await db.query(sql, [userId, startingLimit, resultPerPage]);
 
       let iterator = Math.max(1, page - 5);
